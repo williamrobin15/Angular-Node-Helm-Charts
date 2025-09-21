@@ -1,0 +1,81 @@
+namespace: node
+
+# Deployment configuration
+clientdeployment:
+  name: node-client-deployment
+  replicas: 1
+  revisionHistoryLimit: 3
+  labels:
+    client: client-app
+  image:
+    repository: gcr.io/robin/client-app
+    tag: b191058139a0a46d702c6744c41411d356ae520a
+  container:
+    name: client-app
+    port: 443
+    protocol: TCP
+  resources:
+    requests:
+      cpu: 100m
+      memory: 200Mi
+    limits:
+      cpu: 200m
+  affinity:
+    nodeAffinity:
+      key: client
+      value: client-app
+  pvc:
+    name: client-log-pvc
+    claimName: client-log-pvc
+    mountPath: "/la-client/logs"
+
+      
+# Horizontal Pod Autoscaler configuration
+clienthpa:
+  name: hpa-client
+  namespace: node
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+    cpu:
+      target:
+        averageUtilization: 50
+
+# Service for helm
+clientservice:
+  name: client-app-service
+  namespace: node
+  annotations:
+    appProtocols: '{"client-https-port":"HTTPS"}'
+    neg: '{"exposed_ports": {"443":{"name": "node-client"}}}'
+  portName: client-https-port
+  port: 443
+  targetPort: 443
+  selector:
+    key: client
+    value: client-app
+  type: NodePort
+
+
+# File: myapp-chart/values.yaml
+clientpersistentVolume:
+  name: client-log-pv
+  namespace: node
+  capacity:
+    storage: 25Gi
+  accessModes: ReadWriteMany
+  nfs:
+    path: /filestore_vol1/kubernetes/client-logs/
+    server: 10.XX.XX.XX
+
+
+# File: myapp-chart/values.yaml
+clientpersistentVolumeClaim:
+  name: client-log-pvc
+  namespace: node
+  accessModes:
+     ReadWriteMany
+  storageClassName: ""
+  volumeName: client-log-pv
+  resources:
+    storage: 5Gi

@@ -1,0 +1,14 @@
+# File: myapp-chart/templates/persistentvolumeclaim.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.clientpersistentVolumeClaim.name }}
+  namespace: {{ .Values.clientpersistentVolumeClaim.namespace }}
+spec:
+  accessModes:
+    - {{ .Values.clientpersistentVolumeClaim.accessModes }}
+  storageClassName: ""
+  volumeName: {{ .Values.clientpersistentVolumeClaim.volumeName }}
+  resources:
+    requests:
+      storage: {{ .Values.clientpersistentVolumeClaim.resources.storage }}

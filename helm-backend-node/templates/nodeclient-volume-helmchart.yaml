@@ -1,0 +1,14 @@
+# File: myapp-chart/templates/persistentvolume.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.clientpersistentVolume.name }}
+  namespace: {{ .Values.clientpersistentVolume.namespace }}
+spec:
+  capacity:
+    storage: {{ .Values.clientpersistentVolume.capacity.storage }}
+  accessModes:
+    - {{ .Values.clientpersistentVolume.accessModes }}
+  nfs:
+    path: {{ .Values.clientpersistentVolume.nfs.path }}
+    server: {{ .Values.clientpersistentVolume.nfs.server }}

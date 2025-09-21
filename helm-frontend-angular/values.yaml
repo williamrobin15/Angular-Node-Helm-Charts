@@ -1,0 +1,55 @@
+namespace: angular
+
+# Deployment configuration
+clientdeployment:
+  name: angular-client-deployment
+  replicas: 1
+  revisionHistoryLimit: 3
+  labels:
+    client: client-app
+  image:
+    repository: gcr.io/robin/client-app
+    tag: 9d29274fbef3466f7758061466817bbaa66c1d50
+  container:
+    name: client-app
+    port: 443
+    protocol: TCP
+  resources:
+    requests:
+      cpu: 90m
+      memory: 90Mi
+    limits:
+      cpu: 120m
+      memory: 120Mi 
+  affinity:
+    nodeAffinity:
+      key: client
+      value: client-app
+      
+# Horizontal Pod Autoscaler configuration
+clienthpa:
+  name: hpa-client
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+    cpu:
+      target:
+        averageUtilization: 50
+    memory:
+      target:
+        averageValue: 250Mi
+
+# Service for helm
+clientservice:
+  name: client-app-service
+  namespace: angular
+  annotations:
+    appProtocols: '{"client-https-port":"HTTPS"}'
+    neg: '{"exposed_ports": {"443":{"name": "angular-client"}}}'
+  portName: client-https-port
+  port: 443
+  targetPort: 443
+  selector:
+    key: client
+    value: client-app
+  type: NodePort

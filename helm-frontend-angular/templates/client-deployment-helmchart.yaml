@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.clientdeployment.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    client: client-app
+spec:
+  replicas: {{ .Values.clientdeployment.replicas }}
+  revisionHistoryLimit: {{ .Values.clientdeployment.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      client: client-app
+  template:
+    metadata:
+      labels:
+        client: client-app
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: {{ .Values.clientdeployment.affinity.nodeAffinity.key }}
+                operator: In
+                values:
+                - {{ .Values.clientdeployment.affinity.nodeAffinity.value }}
+      containers:
+      - name: {{ .Values.clientdeployment.container.name }}
+        image: "{{ .Values.clientdeployment.image.repository }}:{{ .Values.clientdeployment.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.clientdeployment.container.port }}
+          protocol: {{ .Values.clientdeployment.container.protocol }}
+        resources:
+          limits:
+            cpu: {{ .Values.clientdeployment.resources.limits.cpu }}
+            memory: {{ .Values.clientdeployment.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.clientdeployment.resources.requests.cpu }}
+            memory: {{ .Values.clientdeployment.resources.requests.memory }}

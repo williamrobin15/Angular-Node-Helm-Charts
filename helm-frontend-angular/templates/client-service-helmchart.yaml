@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.clientservice.name }}
+  namespace: {{ .Values.clientservice.namespace }}
+  annotations:
+    cloud.google.com/app-protocols: '{{ .Values.clientservice.annotations.appProtocols }}'
+    cloud.google.com/neg: '{{ .Values.clientservice.annotations.neg }}'
+spec:
+  ports:
+  - name: {{ .Values.clientservice.portName }}
+    port: {{ .Values.clientservice.port }}
+    targetPort: {{ .Values.clientservice.targetPort }}
+  selector:
+    {{ .Values.clientservice.selector.key }}: {{ .Values.clientservice.selector.value }}
+  type: {{ .Values.clientservice.type }}
