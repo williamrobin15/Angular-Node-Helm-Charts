@@ -1,5 +1,4 @@
-```markdown
-# Angular & Node Helm Charts
+ # **Angular & Node Helm Charts**
 
 Helm charts for deploying a full-stack application with **Angular frontend** and **Node.js backend** on Kubernetes. Simplifies multi-environment deployments and scaling.
 
@@ -23,6 +22,7 @@ Helm charts for deploying a full-stack application with **Angular frontend** and
 ## Deployment
 
 ### Frontend (Angular)
+
 ```bash
 helm upgrade --install angular-frontend ./helm-frontend-angular \
   --namespace <namespace> \
@@ -48,6 +48,7 @@ helm upgrade --install node-backend ./helm-backend-node --namespace fullstack
 
 Edit `values.yaml` in each chart to set:
 
-* Docker image & tag
-* Ports & replicas
-* Ingress / Service settings
+* **Docker image & tag**
+* **Ports & replicas**
+* **Ingress / Service settings**
+
